@@ -1,3 +1,3 @@
-module github.com/boggydigital/utter
+module github.com/boggydigital/utr
 
 go 1.17
