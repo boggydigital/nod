@@ -1,7 +1,7 @@
 package utter
 
 type Listener interface {
-	Listen(msgType MessageType, payload interface{}, path ...string)
+	Listen(msgType MessageType, payload interface{}, topics ...string)
 }
 
 var listeners = make(map[MessageType][]Listener)

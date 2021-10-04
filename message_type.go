@@ -23,7 +23,7 @@ const (
 	Debug
 )
 
-func StdOut() []MessageType {
+func StdOutTypes() []MessageType {
 	return []MessageType{
 		Begin,
 		End,
@@ -35,10 +35,10 @@ func StdOut() []MessageType {
 	}
 }
 
-func StdErr() []MessageType {
-	return append(StdOut(), Log)
+func LogTypes() []MessageType {
+	return append(StdOutTypes(), Log)
 }
 
-func StdDbg() []MessageType {
-	return append(StdErr(), Debug)
+func DebugTypes() []MessageType {
+	return append(LogTypes(), Debug)
 }
