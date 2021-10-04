@@ -1,4 +1,4 @@
-package utter
+package utr
 
 import "fmt"
 
@@ -11,14 +11,14 @@ type stdOutPresenter struct {
 
 func (sop *stdOutPresenter) Listen(msgType MessageType, payload interface{}, topics ...string) {
 	switch msgType {
-	case Begin:
+	case MsgBegin:
 		fmt.Println("begin", topics)
-	case End:
+	case MsgEnd:
 		fmt.Println("end", topics)
-	case Summary:
+	case MsgSummary:
 		fmt.Println("SUMMARY:")
 		fmt.Println(payload)
-	case Success:
+	case MsgSuccess:
 		fmt.Println("SUCCESS:", payload)
 	}
 }

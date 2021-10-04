@@ -1,44 +1,44 @@
-package utter
+package utr
 
 type MessageType int
 
 const (
-	//Begin signals start of an activity. No payload
-	Begin MessageType = iota
-	//End signals completion of an activity. No payload
-	End
-	//Success passes binary result of an activity. Payload type: bool
-	Success
-	//Error provides not-fatal error that happened during activity execution. Payload: error
-	Error
-	//Summary provides map of categorized results. Payload: map[string][]string
-	Summary
-	//Total sets expected total value of an activity progress. Payload: uint64
-	Total
-	//Progress updates current value of an activity progress. Payload: uint64
-	Progress
-	//Log sends a value useful for logging. Payload: string
-	Log
-	//Debug sends a value useful for debugging. Payload: string
-	Debug
+	//MsgBegin signals start of an activity. No payload
+	MsgBegin MessageType = iota
+	//MsgEnd signals completion of an activity. No payload
+	MsgEnd
+	//MsgSuccess passes binary result of an activity. Payload type: bool
+	MsgSuccess
+	//MsgError provides not-fatal error that happened during activity execution. Payload: error
+	MsgError
+	//MsgSummary provides map of categorized results. Payload: map[string][]string
+	MsgSummary
+	//MsgTotal sets expected total value of an activity progress. Payload: uint64
+	MsgTotal
+	//MsgProgress updates current value of an activity progress. Payload: uint64
+	MsgProgress
+	//MsgLog sends a value useful for logging. Payload: string
+	MsgLog
+	//MsgDebug sends a value useful for debugging. Payload: string
+	MsgDebug
 )
 
 func StdOutTypes() []MessageType {
 	return []MessageType{
-		Begin,
-		End,
-		Success,
-		Error,
-		Summary,
-		Total,
-		Progress,
+		MsgBegin,
+		MsgEnd,
+		MsgSuccess,
+		MsgError,
+		MsgSummary,
+		MsgTotal,
+		MsgProgress,
 	}
 }
 
 func LogTypes() []MessageType {
-	return append(StdOutTypes(), Log)
+	return append(StdOutTypes(), MsgLog)
 }
 
 func DebugTypes() []MessageType {
-	return append(LogTypes(), Debug)
+	return append(LogTypes(), MsgDebug)
 }

@@ -1,4 +1,4 @@
-package utter
+package utr
 
 type writer struct {
 	topics  []string
@@ -7,7 +7,7 @@ type writer struct {
 
 func (w *writer) Write(bytes []byte) (int, error) {
 	w.current = w.current + uint64(len(bytes))
-	Msg(Progress, w.current, w.topics...)
+	msg(MsgProgress, w.current, w.topics...)
 	return len(bytes), nil
 }
 

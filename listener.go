@@ -1,4 +1,4 @@
-package utter
+package utr
 
 type Listener interface {
 	Listen(msgType MessageType, payload interface{}, topics ...string)
