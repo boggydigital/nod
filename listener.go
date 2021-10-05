@@ -1,13 +1,13 @@
 package utr
 
-type Listener interface {
-	Listen(msgType MessageType, payload interface{}, topics ...string)
+type Handler interface {
+	Handle(msgType MessageType, payload interface{}, topics ...string)
 }
 
-var listeners = make(map[MessageType][]Listener)
+var handlers = make(map[MessageType][]Handler)
 
-func HandleFunc(listener Listener, msgTypes ...MessageType) {
+func HandleFunc(handler Handler, msgTypes ...MessageType) {
 	for _, msgType := range msgTypes {
-		listeners[msgType] = append(listeners[msgType], listener)
+		handlers[msgType] = append(handlers[msgType], handler)
 	}
 }

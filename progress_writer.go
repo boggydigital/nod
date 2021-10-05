@@ -7,7 +7,7 @@ type writer struct {
 
 func (w *writer) Write(bytes []byte) (int, error) {
 	w.current = w.current + uint64(len(bytes))
-	msg(MsgProgress, w.current, w.topics...)
+	dispatch(MsgProgress, w.current, w.topics...)
 	return len(bytes), nil
 }
 
