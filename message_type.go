@@ -1,10 +1,10 @@
-package utr
+package nod
 
 type MessageType int
 
 const (
-	//MsgBegin signals start of an activity. No payload
-	MsgBegin MessageType = iota
+	//MsgStart signals start of an activity. No payload
+	MsgStart MessageType = iota
 	//MsgEnd signals completion of an activity. No payload
 	MsgEnd
 	//MsgSuccess passes binary result of an activity. Payload type: bool
@@ -25,7 +25,7 @@ const (
 
 func StdOutTypes() []MessageType {
 	return []MessageType{
-		MsgBegin,
+		MsgStart,
 		MsgEnd,
 		MsgSuccess,
 		MsgError,

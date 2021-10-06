@@ -1,4 +1,4 @@
-package utr
+package nod
 
 import (
 	"fmt"
@@ -22,7 +22,7 @@ type stdOutPresenter struct {
 
 func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, topics ...string) {
 	switch msgType {
-	case MsgBegin:
+	case MsgStart:
 		sop.handleBegin(topics...)
 	case MsgEnd:
 		sop.handleEnd(topics...)
@@ -105,14 +105,14 @@ func (sop *stdOutPresenter) handleSummary(sum map[string][]string, topics ...str
 	if sop.flushStartedTopics() {
 		fmt.Println()
 	}
-	if len(topics) > 0 {
+	if len(topics) == 0 {
 		return
 	}
 	fmt.Println()
 	for section, lines := range sum {
 		fmt.Println(section)
 		for _, line := range lines {
-			fmt.Println(line)
+			fmt.Printf(" %s\n", line)
 		}
 	}
 }

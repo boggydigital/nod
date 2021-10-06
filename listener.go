@@ -1,4 +1,4 @@
-package utr
+package nod
 
 type Handler interface {
 	Handle(msgType MessageType, payload interface{}, topics ...string)

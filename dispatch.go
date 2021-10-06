@@ -1,4 +1,4 @@
-package utr
+package nod
 
 func dispatch(msgType MessageType, payload interface{}, topics ...string) {
 	for _, h := range handlers[msgType] {
@@ -6,8 +6,8 @@ func dispatch(msgType MessageType, payload interface{}, topics ...string) {
 	}
 }
 
-func Begin(topics ...string) {
-	dispatch(MsgBegin, nil, topics...)
+func Start(topics ...string) {
+	dispatch(MsgStart, nil, topics...)
 }
 
 func End(topics ...string) {
@@ -18,8 +18,10 @@ func Success(success bool, topics ...string) {
 	dispatch(MsgSuccess, success, topics...)
 }
 
-func Error(err error, topics ...string) {
+func Fatal(err error, topics ...string) error {
 	dispatch(MsgError, err, topics...)
+	dispatch(MsgEnd, err, topics...)
+	return err
 }
 
 func Summary(sum map[string][]string, topics ...string) {
