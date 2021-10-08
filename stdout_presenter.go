@@ -34,13 +34,17 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 		if upd, ok := payload.(uint64); ok {
 			sop.handleProgress(upd, topics...)
 		}
-	case MsgSuccess:
-		if success, ok := payload.(bool); ok {
-			sop.handleSuccess(success, topics...)
+	case MsgResult:
+		if res, ok := payload.(string); ok {
+			sop.handleResult(res, topics...)
 		}
 	case MsgSummary:
 		if sum, ok := payload.(map[string][]string); ok {
 			sop.handleSummary(sum, topics...)
+		}
+	case MsgError:
+		if err, ok := payload.(error); ok {
+			sop.handleError(err, topics...)
 		}
 	}
 }
@@ -57,17 +61,12 @@ func (sop *stdOutPresenter) handleEnd(topics ...string) {
 		fmt.Println()
 	}
 	topic := path.Join(topics...)
-	newLine := false
+
 	if _, ok := sop.topicTotals[topic]; ok {
 		delete(sop.topicTotals, topic)
-		newLine = true
 	}
 	if _, ok := sop.topicPercents[topic]; ok {
 		delete(sop.topicPercents, topic)
-		newLine = true
-	}
-	if newLine {
-		fmt.Println()
 	}
 }
 
@@ -86,19 +85,20 @@ func (sop *stdOutPresenter) handleProgress(upd uint64, topics ...string) {
 			fmt.Print("\r")
 			presentTopics(topics...)
 			fmt.Printf(" %s%%", pctStr)
+			if pctStr == "100%" {
+				fmt.Println()
+			}
 			sop.topicPercents[topic] = pctStr
 		}
 	}
 }
 
-func (sop *stdOutPresenter) handleSuccess(success bool, topics ...string) {
+func (sop *stdOutPresenter) handleResult(res string, topics ...string) {
+	sop.flushStartedTopics()
+
 	fmt.Print("\r")
 	presentTopics(topics...)
-	str := "OK"
-	if !success {
-		str = "FAIL"
-	}
-	fmt.Printf(" %-4s", str)
+	fmt.Printf(" %-4s\n", res)
 }
 
 func (sop *stdOutPresenter) handleSummary(sum map[string][]string, topics ...string) {
@@ -115,6 +115,11 @@ func (sop *stdOutPresenter) handleSummary(sum map[string][]string, topics ...str
 			fmt.Printf(" %s\n", line)
 		}
 	}
+}
+
+func (sop *stdOutPresenter) handleError(err error, topics ...string) {
+	sop.flushStartedTopics()
+	fmt.Println(err)
 }
 
 func (sop *stdOutPresenter) flushStartedTopics() bool {

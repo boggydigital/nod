@@ -14,13 +14,17 @@ func End(topics ...string) {
 	dispatch(MsgEnd, nil, topics...)
 }
 
-func Success(success bool, topics ...string) {
-	dispatch(MsgSuccess, success, topics...)
+func Result(res string, topics ...string) {
+	dispatch(MsgResult, res, topics...)
+}
+
+func Error(err error, topics ...string) {
+	dispatch(MsgError, err, topics...)
 }
 
 func Fatal(err error, topics ...string) error {
-	dispatch(MsgError, err, topics...)
-	dispatch(MsgEnd, err, topics...)
+	Error(err, topics...)
+	End(topics...)
 	return err
 }
 

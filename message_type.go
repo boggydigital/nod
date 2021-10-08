@@ -7,8 +7,8 @@ const (
 	MsgStart MessageType = iota
 	//MsgEnd signals completion of an activity. No payload
 	MsgEnd
-	//MsgSuccess passes binary result of an activity. Payload type: bool
-	MsgSuccess
+	//MsgResult provides result of an activity. Payload type: string
+	MsgResult
 	//MsgError provides not-fatal error that happened during activity execution. Payload: error
 	MsgError
 	//MsgSummary provides map of categorized results. Payload: map[string][]string
@@ -27,7 +27,7 @@ func StdOutTypes() []MessageType {
 	return []MessageType{
 		MsgStart,
 		MsgEnd,
-		MsgSuccess,
+		MsgResult,
 		MsgError,
 		MsgSummary,
 		MsgTotal,
