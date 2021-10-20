@@ -5,6 +5,8 @@ type MessageType int
 const (
 	//MsgNone is a message type initial value. No payload
 	MsgNone MessageType = iota
+	//MsgSessionBegin signals start of a session. No payload
+	MsgSessionBegin
 	//MsgBegin signals start of an activity. No payload
 	MsgBegin
 	//MsgError provides not-fatal error that happened during activity execution. Payload: error
@@ -23,23 +25,28 @@ const (
 	MsgSummary
 	//MsgEnd signals completion of an activity. No payload
 	MsgEnd
+	//MsgSessionEnd signals completion of a session. No payload
+	MsgSessionEnd
 )
 
 var messageTypeStrings = map[MessageType]string{
-	MsgNone:    "none",
-	MsgBegin:   "begin",
-	MsgError:   "error",
-	MsgTotal:   "total",
-	MsgCurrent: "current",
-	MsgLog:     "log",
-	MsgDebug:   "debug",
-	MsgResult:  "result",
-	MsgSummary: "summary",
-	MsgEnd:     "end",
+	MsgNone:         "none",
+	MsgSessionBegin: "session-begin",
+	MsgBegin:        "begin",
+	MsgError:        "error",
+	MsgTotal:        "total",
+	MsgCurrent:      "current",
+	MsgLog:          "log",
+	MsgDebug:        "debug",
+	MsgResult:       "result",
+	MsgSummary:      "summary",
+	MsgEnd:          "end",
+	MsgSessionEnd:   "session-end",
 }
 
 func StdOutTypes() []MessageType {
 	return []MessageType{
+		MsgSessionBegin,
 		MsgBegin,
 		MsgEnd,
 		MsgError,
@@ -47,6 +54,7 @@ func StdOutTypes() []MessageType {
 		MsgCurrent,
 		MsgResult,
 		MsgSummary,
+		MsgSessionEnd,
 	}
 }
 

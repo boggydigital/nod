@@ -58,8 +58,10 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 		}
 	case MsgError:
 		if err, ok := payload.(error); ok {
-			sop.printf("%-4s ", err)
+			sop.printf("ERROR: %s ", err)
 		}
+	case MsgSessionEnd:
+		sop.printf("")
 	}
 
 	if shouldBreakAfter(msgType, sop.prevMessage) {
