@@ -1,7 +1,7 @@
 package nod
 
 type Handler interface {
-	Handle(msgType MessageType, payload interface{}, topics ...string)
+	Handle(msgType MessageType, payload interface{}, topic string)
 }
 
 var handlers = make(map[MessageType][]Handler)
