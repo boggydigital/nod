@@ -1,16 +1,18 @@
 package nod
 
+import "fmt"
+
 type ActCloser interface {
 	End()
-	EndWithResult(string)
+	EndWithResult(string, ...interface{})
 	EndWithError(error) error
 	EndWithSummary(map[string][]string)
 }
 
 type ActLogger interface {
 	Error(error)
-	Log(string)
-	Debug(string)
+	Log(string, ...interface{})
+	Debug(string, ...interface{})
 }
 
 type ActLogCloser interface {
@@ -23,7 +25,8 @@ type activity struct {
 	active bool
 }
 
-func Begin(topic string) *activity {
+func Begin(format string, d ...interface{}) *activity {
+	topic := fmt.Sprintf(format, d...)
 	dispatch(MsgBegin, nil, topic)
 	return &activity{
 		topic:  topic,
@@ -38,8 +41,9 @@ func (a *activity) End() {
 	}
 }
 
-func (a *activity) EndWithResult(result string) {
+func (a *activity) EndWithResult(format string, d ...interface{}) {
 	if a.active {
+		result := fmt.Sprintf(format, d...)
 		dispatch(MsgResult, result, a.topic)
 		a.End()
 	}
@@ -67,10 +71,12 @@ func (a *activity) EndWithSummary(summary map[string][]string) {
 	}
 }
 
-func (a *activity) Log(msg string) {
+func (a *activity) Log(format string, d ...interface{}) {
+	msg := fmt.Sprintf(format, d...)
 	dispatch(MsgLog, msg, a.topic)
 }
 
-func (a *activity) Debug(dbg string) {
+func (a *activity) Debug(format string, d ...interface{}) {
+	dbg := fmt.Sprintf(format, d...)
 	dispatch(MsgDebug, dbg, a.topic)
 }

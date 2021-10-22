@@ -1,11 +1,14 @@
 package nod
 
-import "io"
+import (
+	"io"
+)
 
 type TotalProgressWriter interface {
 	Total(uint64)
 	Current(uint64)
-	Increment(uint64)
+	Progress(uint64)
+	Increment()
 	io.Writer
 	ActLogCloser
 }
@@ -17,7 +20,7 @@ type totalProgress struct {
 }
 
 func (tp *totalProgress) Write(bytes []byte) (int, error) {
-	tp.Increment(uint64(len(bytes)))
+	tp.Progress(uint64(len(bytes)))
 	return len(bytes), nil
 }
 
@@ -31,13 +34,17 @@ func (tp *totalProgress) Current(current uint64) {
 	dispatch(MsgCurrent, tp.current, tp.topic)
 }
 
-func (tp *totalProgress) Increment(value uint64) {
+func (tp *totalProgress) Progress(value uint64) {
 	tp.current += value
 	dispatch(MsgCurrent, tp.current, tp.topic)
 }
 
-func TotalProgress(topic string) TotalProgressWriter {
+func (tp *totalProgress) Increment() {
+	tp.Progress(1)
+}
+
+func NewProgress(format string, d ...interface{}) TotalProgressWriter {
 	return &totalProgress{
-		activity: *Begin(topic),
+		activity: *Begin(format, d...),
 	}
 }
