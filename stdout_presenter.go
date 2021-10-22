@@ -12,17 +12,18 @@ func EnableStdOutPresenter() {
 }
 
 type stdOutPresenter struct {
-	topicTotals     map[string]uint64
-	topicPercents   map[string]string
-	prevMessage     MessageType
-	opportunisticLF bool
-	opportunisticCR bool
+	topicTotals           map[string]uint64
+	topicPercents         map[string]string
+	prevMessage           MessageType
+	opportunisticBeforeLF bool
+	existingAfterLF       bool
+	opportunisticCR       bool
 }
 
 func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, topic string) {
 
 	if shouldBreakBefore(msgType, sop.prevMessage) {
-		sop.opportunisticLF = true
+		sop.opportunisticBeforeLF = true
 	}
 
 	if shouldRewrite(msgType, sop.prevMessage) {
@@ -60,27 +61,33 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 		if err, ok := payload.(error); ok {
 			sop.printf("ERROR: %s ", err)
 		}
-	case MsgSessionEnd:
-		sop.printf("")
 	}
 
 	if shouldBreakAfter(msgType, sop.prevMessage) {
-		sop.opportunisticLF = true
+		if !sop.existingAfterLF {
+			fmt.Println()
+		}
+		sop.existingAfterLF = true
 	}
 
 	sop.prevMessage = msgType
 }
 
 func (sop *stdOutPresenter) printf(format string, a ...interface{}) {
-	if sop.opportunisticLF {
+	if sop.opportunisticBeforeLF &&
+		!sop.existingAfterLF &&
+		format != "" {
 		fmt.Println()
-		sop.opportunisticLF = false
+		sop.opportunisticBeforeLF = false
 	}
-	if sop.opportunisticCR {
+	if sop.opportunisticCR && format != "" {
 		fmt.Print("\r")
 		sop.opportunisticCR = false
 	}
 	fmt.Print(fmt.Sprintf(format, a...))
+	if sop.existingAfterLF && format != "" {
+		sop.existingAfterLF = false
+	}
 }
 
 func shouldBreakBefore(msg, prevMsg MessageType) bool {
