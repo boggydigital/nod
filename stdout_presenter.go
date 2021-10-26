@@ -57,6 +57,21 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 		if result, ok := payload.(string); ok {
 			sop.printf("%s %-4s ", topic, result)
 		}
+	case MsgSummary:
+		sop.opportunisticBeforeLF = true
+		sop.existingAfterLF = false
+		if summary, ok := payload.(map[string][]string); ok {
+			for section, items := range summary {
+				if section != "" {
+					sop.printf(section)
+					sop.opportunisticBeforeLF = true
+				}
+				for _, item := range items {
+					sop.printf(" %s", item)
+					sop.opportunisticBeforeLF = true
+				}
+			}
+		}
 	case MsgError:
 		if err, ok := payload.(error); ok {
 			sop.printf("ERROR: %s ", err)
@@ -101,6 +116,10 @@ func shouldBreakBefore(msg, prevMsg MessageType) bool {
 		case MsgCurrent:
 			return true
 		}
+	case MsgSummary:
+		return true
+	case MsgCurrent:
+		return prevMsg == MsgEnd
 	}
 	return false
 }

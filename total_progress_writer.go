@@ -8,6 +8,9 @@ type TotalProgressWriter interface {
 	Total(uint64)
 	Current(uint64)
 	Progress(uint64)
+	TotalInt(int)
+	CurrentInt(int)
+	ProgressInt(int)
 	Increment()
 	io.Writer
 	ActLogCloser
@@ -29,14 +32,26 @@ func (tp *totalProgress) Total(total uint64) {
 	dispatch(MsgTotal, tp.total, tp.topic)
 }
 
+func (tp *totalProgress) TotalInt(total int) {
+	tp.Total(uint64(total))
+}
+
 func (tp *totalProgress) Current(current uint64) {
 	tp.current = current
 	dispatch(MsgCurrent, tp.current, tp.topic)
 }
 
+func (tp *totalProgress) CurrentInt(current int) {
+	tp.Current(uint64(current))
+}
+
 func (tp *totalProgress) Progress(value uint64) {
 	tp.current += value
 	dispatch(MsgCurrent, tp.current, tp.topic)
+}
+
+func (tp *totalProgress) ProgressInt(value int) {
+	tp.Progress(uint64(value))
 }
 
 func (tp *totalProgress) Increment() {

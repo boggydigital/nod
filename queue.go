@@ -24,10 +24,8 @@ func (q *queue) Discard() {
 }
 
 func (q *queue) Flush() {
-	if q.active {
-		for _, m := range q.messages {
-			dispatch(m.msgType, m.payload, m.topic)
-		}
+	for _, m := range q.messages {
+		dispatch(m.msgType, m.payload, m.topic)
 	}
 	q.Discard()
 }
@@ -41,7 +39,8 @@ func QueueBegin(format string, d ...interface{}) *queue {
 	}
 	return &queue{
 		activity: activity{
-			topic: topic,
+			topic:  topic,
+			active: true,
 		},
 		messages: messages,
 	}
@@ -65,6 +64,7 @@ func (q *queue) EndWithResult(format string, d ...interface{}) {
 			payload: fmt.Sprintf(format, d...),
 			topic:   q.topic,
 		})
+		q.End()
 	}
 }
 
