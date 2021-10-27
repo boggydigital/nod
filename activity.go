@@ -12,7 +12,6 @@ type ActCloser interface {
 type ActLogger interface {
 	Error(error)
 	Log(string, ...interface{})
-	Debug(string, ...interface{})
 }
 
 type ActLogCloser interface {
@@ -74,9 +73,4 @@ func (a *activity) EndWithSummary(summary map[string][]string) {
 func (a *activity) Log(format string, d ...interface{}) {
 	msg := fmt.Sprintf(format, d...)
 	dispatch(MsgLog, msg, a.topic)
-}
-
-func (a *activity) Debug(format string, d ...interface{}) {
-	dbg := fmt.Sprintf(format, d...)
-	dispatch(MsgDebug, dbg, a.topic)
 }

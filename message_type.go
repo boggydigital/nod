@@ -15,8 +15,6 @@ const (
 	MsgCurrent
 	//MsgLog sends a value useful for logging. Payload: string
 	MsgLog
-	//MsgDebug sends a value useful for debugging. Payload: string
-	MsgDebug
 	//MsgResult provides result of an activity. Payload type: string
 	MsgResult
 	//MsgSummary provides map of categorized results. Payload: map[string][]string
@@ -32,7 +30,6 @@ var messageTypeStrings = map[MessageType]string{
 	MsgTotal:   "total",
 	MsgCurrent: "current",
 	MsgLog:     "log",
-	MsgDebug:   "debug",
 	MsgResult:  "result",
 	MsgSummary: "summary",
 	MsgEnd:     "end",
@@ -47,15 +44,21 @@ func StdOutTypes() []MessageType {
 		MsgCurrent,
 		MsgResult,
 		MsgSummary,
+		//MsgLog,
 	}
 }
 
 func LogTypes() []MessageType {
-	return append(StdOutTypes(), MsgLog)
-}
-
-func DebugTypes() []MessageType {
-	return append(LogTypes(), MsgDebug)
+	return []MessageType{
+		MsgBegin,
+		MsgEnd,
+		MsgError,
+		MsgTotal,
+		//MsgCurrent,
+		MsgResult,
+		MsgSummary,
+		MsgLog,
+	}
 }
 
 func (mt MessageType) String() string {

@@ -106,13 +106,3 @@ func (q *queue) Log(format string, d ...interface{}) {
 		})
 	}
 }
-
-func (q *queue) Debug(format string, d ...interface{}) {
-	if q.active {
-		q.messages = append(q.messages, message{
-			msgType: MsgDebug,
-			payload: fmt.Sprintf(format, d...),
-			topic:   q.topic,
-		})
-	}
-}
