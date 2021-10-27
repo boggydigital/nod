@@ -35,6 +35,16 @@ var messageTypeStrings = map[MessageType]string{
 	MsgEnd:     "end",
 }
 
+func maxStrLen() int {
+	ls := 0
+	for _, str := range messageTypeStrings {
+		if len(str) > ls {
+			ls = len(str)
+		}
+	}
+	return ls
+}
+
 func StdOutTypes() []MessageType {
 	return []MessageType{
 		MsgBegin,

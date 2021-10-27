@@ -41,7 +41,12 @@ type fileLogger struct {
 }
 
 func (fl *fileLogger) Handle(msgType MessageType, payload interface{}, topic string) {
-	fl.logger.Println(strings.ToUpper(msgType.String()), topic, payload)
+	fl.logger.Printf(
+		"%-*s %s: %v",
+		maxStrLen(),
+		strings.ToUpper(msgType.String()),
+		strings.TrimPrefix(topic, " "),
+		payload)
 }
 
 func (fl *fileLogger) Close() error {
