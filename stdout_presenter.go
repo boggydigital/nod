@@ -26,13 +26,15 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 		sop.opportunisticBeforeLF = true
 	}
 
+	//TODO: consider storing last line length to determine if new line would be shorter
+	//to overwrite with whitespace to clean up extra characters
 	if shouldRewrite(msgType, sop.prevMessage) {
 		sop.opportunisticCR = true
 	}
 
 	switch msgType {
 	case MsgBegin:
-		sop.printf(topic + " ")
+		sop.printf("%s ", topic)
 	case MsgEnd:
 		if _, ok := sop.topicTotals[topic]; ok {
 			delete(sop.topicTotals, topic)
@@ -46,31 +48,15 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 		}
 	case MsgCurrent:
 		if current, ok := payload.(uint64); ok {
-			pct := float64(current*100) / float64(sop.topicTotals[topic])
-			pctStr := fmt.Sprintf("%3.0f", pct)
-			if topicPct, ok := sop.topicPercents[topic]; !ok || pctStr != topicPct {
-				sop.printf("%s %s%% ", topic, pctStr)
-			}
-			sop.topicPercents[topic] = pctStr
+			sop.printCurrent(current, topic)
 		}
 	case MsgResult:
 		if result, ok := payload.(string); ok {
 			sop.printf("%s %-4s ", topic, result)
 		}
 	case MsgSummary:
-		sop.opportunisticBeforeLF = true
-		sop.existingAfterLF = false
 		if summary, ok := payload.(map[string][]string); ok {
-			for section, items := range summary {
-				if section != "" {
-					sop.printf(section)
-					sop.opportunisticBeforeLF = true
-				}
-				for _, item := range items {
-					sop.printf(" %s", item)
-					sop.opportunisticBeforeLF = true
-				}
-			}
+			sop.printSummary(summary)
 		}
 	case MsgError:
 		if err, ok := payload.(error); ok {
@@ -86,6 +72,33 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 	}
 
 	sop.prevMessage = msgType
+}
+
+func (sop *stdOutPresenter) printSummary(summary map[string][]string) {
+	sop.opportunisticBeforeLF = true
+	sop.existingAfterLF = false
+	for section, items := range summary {
+		if len(items) == 0 {
+			continue
+		}
+		if section != "" {
+			sop.printf(section)
+			sop.opportunisticBeforeLF = true
+		}
+		for _, item := range items {
+			sop.printf(" %s", item)
+			sop.opportunisticBeforeLF = true
+		}
+	}
+}
+
+func (sop *stdOutPresenter) printCurrent(current uint64, topic string) {
+	pct := float64(current*100) / float64(sop.topicTotals[topic])
+	pctStr := fmt.Sprintf("%3.0f", pct)
+	if topicPct, ok := sop.topicPercents[topic]; !ok || pctStr != topicPct {
+		sop.printf("%s %s%% ", topic, pctStr)
+	}
+	sop.topicPercents[topic] = pctStr
 }
 
 func (sop *stdOutPresenter) printf(format string, a ...interface{}) {
