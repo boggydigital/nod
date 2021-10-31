@@ -4,21 +4,11 @@ import "fmt"
 
 type ActCloser interface {
 	End()
+	Error(error)
 	EndWithResult(string, ...interface{})
 	EndWithError(error) error
 	EndWithSummary(map[string][]string)
 }
-
-type ActLogger interface {
-	Error(error)
-	Log(string, ...interface{})
-}
-
-type ActLogCloser interface {
-	ActLogger
-	ActCloser
-}
-
 type activity struct {
 	topic  string
 	active bool

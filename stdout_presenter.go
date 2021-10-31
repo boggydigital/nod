@@ -47,8 +47,10 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 			sop.topicTotals[topic] = total
 		}
 	case MsgCurrent:
-		if current, ok := payload.(uint64); ok {
-			sop.printCurrent(current, topic)
+		if total, ok := sop.topicTotals[topic]; ok && total > 0 {
+			if current, ok := payload.(uint64); ok {
+				sop.printCurrent(current, topic)
+			}
 		}
 	case MsgResult:
 		if result, ok := payload.(string); ok {
@@ -78,11 +80,8 @@ func (sop *stdOutPresenter) printSummary(summary map[string][]string) {
 	sop.opportunisticBeforeLF = true
 	sop.existingAfterLF = false
 	for section, items := range summary {
-		if len(items) == 0 {
-			continue
-		}
 		if section != "" {
-			sop.printf(section)
+			sop.printf("%s", section)
 			sop.opportunisticBeforeLF = true
 		}
 		for _, item := range items {

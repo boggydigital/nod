@@ -13,7 +13,7 @@ type TotalProgressWriter interface {
 	ProgressInt(int)
 	Increment()
 	io.Writer
-	ActLogCloser
+	ActCloser
 }
 
 type totalProgress struct {
