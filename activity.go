@@ -3,6 +3,7 @@ package nod
 import "fmt"
 
 type ActCloser interface {
+	Log(string, ...interface{})
 	End()
 	Error(error)
 	EndWithResult(string, ...interface{})
