@@ -17,7 +17,7 @@ const (
 	MsgLog
 	//MsgResult provides result of an activity. Payload type: string
 	MsgResult
-	//MsgSummary provides map of categorized results. Payload: map[string][]string
+	//MsgSummary provides map of categorized results. Payload: headingSections
 	MsgSummary
 	//MsgEnd signals completion of an activity. No payload
 	MsgEnd

@@ -26,7 +26,6 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 		sop.opportunisticBeforeLF = true
 	}
 
-	//TODO: consider storing last line length to determine if new line would be shorter
 	//to overwrite with whitespace to clean up extra characters
 	if shouldRewrite(msgType, sop.prevMessage) {
 		sop.opportunisticCR = true
@@ -57,7 +56,7 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 			sop.printf("%s %-4s ", topic, result)
 		}
 	case MsgSummary:
-		if summary, ok := payload.(map[string][]string); ok {
+		if summary, ok := payload.(headingSections); ok {
 			sop.printSummary(summary)
 		}
 	case MsgError:
@@ -76,12 +75,19 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 	sop.prevMessage = msgType
 }
 
-func (sop *stdOutPresenter) printSummary(summary map[string][]string) {
+func (sop *stdOutPresenter) printSummary(summary headingSections) {
 	sop.opportunisticBeforeLF = true
 	sop.existingAfterLF = false
-	for section, items := range summary {
-		if section != "" {
-			sop.printf("%s", section)
+
+	if summary.heading != "" {
+		sop.printf(summary.heading)
+		sop.opportunisticBeforeLF = true
+		sop.existingAfterLF = false
+	}
+
+	for sectionHeading, items := range summary.sections {
+		if sectionHeading != "" {
+			sop.printf("%s", sectionHeading)
 			sop.opportunisticBeforeLF = true
 		}
 		for _, item := range items {
@@ -138,6 +144,8 @@ func shouldBreakBefore(msg, prevMsg MessageType) bool {
 
 func shouldBreakAfter(msg, prevMsg MessageType) bool {
 	switch msg {
+	case MsgError:
+		fallthrough
 	case MsgEnd:
 		return true
 	}

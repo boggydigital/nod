@@ -87,7 +87,7 @@ func (q *queue) EndWithError(err error) error {
 	return nil
 }
 
-func (q *queue) EndWithSummary(summary map[string][]string) {
+func (q *queue) EndWithSummary(summary headingSections) {
 	if q.active {
 		q.messages = append(q.messages, message{
 			msgType: MsgSummary,
