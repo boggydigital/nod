@@ -2,12 +2,11 @@ package nod
 
 type Handler interface {
 	Handle(msgType MessageType, payload interface{}, topic string)
+	Close() error
 }
 
-var handlers = make(map[MessageType][]Handler)
+var handlers = make(map[string]Handler)
 
-func HandleFunc(handler Handler, msgTypes ...MessageType) {
-	for _, msgType := range msgTypes {
-		handlers[msgType] = append(handlers[msgType], handler)
-	}
+func HandleFunc(handler Handler, output string) {
+	handlers[output] = handler
 }

@@ -30,7 +30,7 @@ func EnableFileLogger(dir string) (io.Closer, error) {
 		logger: logger,
 	}
 
-	HandleFunc(fl, LogTypes()...)
+	HandleFunc(fl, FileLog)
 
 	return fl, nil
 }

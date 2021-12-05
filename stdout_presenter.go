@@ -8,7 +8,7 @@ func EnableStdOutPresenter() {
 		topicPercents: make(map[string]string),
 		prevMessage:   MsgNone,
 	}
-	HandleFunc(sop, StdOutTypes()...)
+	HandleFunc(sop, StdOut)
 }
 
 type stdOutPresenter struct {
@@ -18,6 +18,11 @@ type stdOutPresenter struct {
 	opportunisticBeforeLF bool
 	existingAfterLF       bool
 	opportunisticCR       bool
+}
+
+func (sop *stdOutPresenter) Close() error {
+	fmt.Println()
+	return nil
 }
 
 func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, topic string) {

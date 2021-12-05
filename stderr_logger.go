@@ -7,12 +7,21 @@ import (
 
 func EnableStdErrLogger() {
 	sol := &stdErrLogger{}
-	HandleFunc(sol, LogTypes()...)
+	HandleFunc(sol, StdErr)
 }
 
 type stdErrLogger struct {
 }
 
-func (sol *stdErrLogger) Handle(msgType MessageType, payload interface{}, topic string) {
-	log.Println(strings.ToUpper(msgType.String()), topic, payload)
+func (sel *stdErrLogger) Close() error {
+	return nil
+}
+
+func (sel *stdErrLogger) Handle(msgType MessageType, payload interface{}, topic string) {
+	if payload != nil {
+		log.Println(strings.ToUpper(msgType.String()), topic, payload)
+	} else {
+		log.Println(strings.ToUpper(msgType.String()), topic)
+	}
+
 }

@@ -45,32 +45,6 @@ func maxStrLen() int {
 	return ls
 }
 
-func StdOutTypes() []MessageType {
-	return []MessageType{
-		MsgBegin,
-		MsgEnd,
-		MsgError,
-		MsgTotal,
-		MsgCurrent,
-		MsgResult,
-		MsgSummary,
-		//MsgLog,
-	}
-}
-
-func LogTypes() []MessageType {
-	return []MessageType{
-		MsgBegin,
-		MsgEnd,
-		MsgError,
-		MsgTotal,
-		//MsgCurrent,
-		MsgResult,
-		MsgSummary,
-		MsgLog,
-	}
-}
-
 func (mt MessageType) String() string {
 	return messageTypeStrings[mt]
 }
