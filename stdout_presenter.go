@@ -131,14 +131,7 @@ func (sop *stdOutPresenter) printf(format string, a ...interface{}) {
 func shouldBreakBefore(msg, prevMsg MessageType) bool {
 	switch msg {
 	case MsgBegin:
-		switch prevMsg {
-		case MsgTotal:
-			fallthrough
-		case MsgBegin:
-			fallthrough
-		case MsgCurrent:
-			return true
-		}
+		return true
 	case MsgSummary:
 		return true
 	case MsgCurrent:
