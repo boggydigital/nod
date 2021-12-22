@@ -4,9 +4,10 @@ import "fmt"
 
 func EnableStdOutPresenter() {
 	sop := &stdOutPresenter{
-		topicTotals:   make(map[string]uint64),
-		topicPercents: make(map[string]string),
-		prevMessage:   MsgNone,
+		topicTotals:     make(map[string]uint64),
+		topicPercents:   make(map[string]string),
+		prevMessage:     MsgNone,
+		existingAfterLF: true,
 	}
 	HandleFunc(sop, StdOut)
 }
