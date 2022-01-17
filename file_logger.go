@@ -1,6 +1,7 @@
 package nod
 
 import (
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -40,25 +41,34 @@ type fileLogger struct {
 	logger *log.Logger
 }
 
+func skipLogging(msgType MessageType) bool {
+	switch msgType {
+	case MsgCurrent:
+		return true
+	case MsgTotal:
+		return true
+	default:
+		return false
+	}
+}
+
 func (fl *fileLogger) Handle(msgType MessageType, payload interface{}, topic string) {
-	commonFormat := "%-*s %s"
-	msgTypeUpper := strings.ToUpper(msgType.String())
-	topicSansPrefix := strings.TrimPrefix(topic, " ")
+
+	if skipLogging(msgType) {
+		return
+	}
+
+	logLine := fmt.Sprintf(
+		"%-*s %s",
+		maxStrLen(),
+		strings.ToUpper(msgType.String()),
+		strings.TrimPrefix(topic, " "))
 
 	if payload != nil {
-		fl.logger.Printf(
-			commonFormat+": %v",
-			maxStrLen(),
-			msgTypeUpper,
-			topicSansPrefix,
-			payload)
-	} else {
-		fl.logger.Printf(
-			commonFormat,
-			maxStrLen(),
-			msgTypeUpper,
-			topicSansPrefix)
+		logLine = fmt.Sprintf("%s: %v", logLine, payload)
 	}
+
+	fl.logger.Printf(logLine)
 }
 
 func (fl *fileLogger) Close() error {

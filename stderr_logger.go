@@ -1,6 +1,7 @@
 package nod
 
 import (
+	"fmt"
 	"log"
 	"strings"
 )
@@ -18,10 +19,16 @@ func (sel *stdErrLogger) Close() error {
 }
 
 func (sel *stdErrLogger) Handle(msgType MessageType, payload interface{}, topic string) {
-	if payload != nil {
-		log.Println(strings.ToUpper(msgType.String()), topic, payload)
-	} else {
-		log.Println(strings.ToUpper(msgType.String()), topic)
+
+	if skipLogging(msgType) {
+		return
 	}
 
+	logLine := fmt.Sprintf("%s %s", strings.ToUpper(msgType.String()), topic)
+
+	if payload != nil {
+		logLine = fmt.Sprintf("%s %v", logLine, payload)
+	}
+
+	log.Println(logLine)
 }
