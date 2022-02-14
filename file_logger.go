@@ -68,7 +68,7 @@ func (fl *fileLogger) Handle(msgType MessageType, payload interface{}, topic str
 		logLine = fmt.Sprintf("%s: %v", logLine, payload)
 	}
 
-	fl.logger.Printf(logLine)
+	fl.logger.Print(logLine)
 }
 
 func (fl *fileLogger) Close() error {
