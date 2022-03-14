@@ -2,9 +2,9 @@ package nod
 
 import "net/http"
 
-func RequestLog(h func(w http.ResponseWriter, r *http.Request)) func(w http.ResponseWriter, r *http.Request) {
-	return func(w http.ResponseWriter, r *http.Request) {
+func RequestLog(h http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		Log("%s %s", r.Method, r.URL)
-		h(w, r)
-	}
+		h.ServeHTTP(w, r)
+	})
 }
