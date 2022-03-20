@@ -1,6 +1,10 @@
 package nod
 
-import "fmt"
+import (
+	"fmt"
+	"golang.org/x/exp/maps"
+	"sort"
+)
 
 func EnableStdOutPresenter() {
 	sop := &stdOutPresenter{
@@ -91,7 +95,11 @@ func (sop *stdOutPresenter) printSummary(summary headingSections) {
 		sop.existingAfterLF = false
 	}
 
-	for sectionHeading, items := range summary.sections {
+	sorted := maps.Keys(summary.sections)
+	sort.Strings(sorted)
+
+	for _, sectionHeading := range sorted {
+		items := summary.sections[sectionHeading]
 		if sectionHeading != "" {
 			sop.printf("%s", sectionHeading)
 			sop.opportunisticBeforeLF = true
