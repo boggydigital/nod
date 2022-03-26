@@ -1,11 +1,14 @@
 package nod
 
+import "fmt"
+
 func Error(err error) error {
 	dispatch(MsgError, nil, err.Error())
 	return err
 }
 
-func ErrorStr(s string) string {
-	dispatch(MsgError, nil, s)
-	return s
+func ErrorStr(format string, d ...interface{}) string {
+	msg := fmt.Sprintf(format, d)
+	dispatch(MsgError, nil, msg)
+	return msg
 }
