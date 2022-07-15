@@ -63,3 +63,15 @@ func NewProgress(format string, d ...interface{}) TotalProgressWriter {
 		activity: *Begin(format, d...),
 	}
 }
+
+func Increment(tpw TotalProgressWriter) {
+	if tpw != nil {
+		tpw.Increment()
+	}
+}
+
+func TotalInt(tpw TotalProgressWriter, total int) {
+	if tpw != nil {
+		tpw.TotalInt(total)
+	}
+}
