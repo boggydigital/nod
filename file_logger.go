@@ -10,7 +10,10 @@ import (
 	"time"
 )
 
-const logExt = ".log"
+const (
+	logExt     = ".log"
+	TimeFormat = "2006-01-02-15-04-05"
+)
 
 func EnableFileLogger(dir string) (io.Closer, error) {
 
@@ -20,7 +23,7 @@ func EnableFileLogger(dir string) (io.Closer, error) {
 		}
 	}
 
-	filename := filepath.Join(dir, time.Now().Format("2006-01-02-15-04-05")) + logExt
+	filename := filepath.Join(dir, time.Now().Format(TimeFormat)) + logExt
 	file, err := os.Create(filename)
 	if err != nil {
 		return nil, err
