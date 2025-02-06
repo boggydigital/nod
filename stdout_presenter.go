@@ -2,8 +2,8 @@ package nod
 
 import (
 	"fmt"
-	"golang.org/x/exp/maps"
-	"sort"
+	"maps"
+	"slices"
 )
 
 func EnableStdOutPresenter() {
@@ -95,10 +95,9 @@ func (sop *stdOutPresenter) printSummary(summary headingSections) {
 		sop.existingAfterLF = false
 	}
 
-	sorted := maps.Keys(summary.sections)
-	sort.Strings(sorted)
+	sortedSections := slices.Sorted(maps.Keys(summary.sections))
 
-	for _, sectionHeading := range sorted {
+	for _, sectionHeading := range sortedSections {
 		items := summary.sections[sectionHeading]
 		if sectionHeading != "" {
 			sop.printf("%s", sectionHeading)
