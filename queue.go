@@ -78,15 +78,6 @@ func (q *queue) Error(err error) {
 	}
 }
 
-func (q *queue) EndWithError(err error) error {
-	if q.active {
-		q.Error(err)
-		q.End()
-		return err
-	}
-	return nil
-}
-
 func (q *queue) EndWithSummary(summary headingSections) {
 	if q.active {
 		q.messages = append(q.messages, message{

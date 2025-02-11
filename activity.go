@@ -7,7 +7,6 @@ type ActCloser interface {
 	End()
 	Error(error)
 	EndWithResult(string, ...interface{})
-	EndWithError(error) error
 	EndWithSummary(string, map[string][]string)
 }
 type activity struct {
@@ -43,15 +42,6 @@ func (a *activity) Error(err error) {
 	if a.active {
 		dispatch(MsgError, err, a.topic)
 	}
-}
-
-func (a *activity) EndWithError(err error) error {
-	if a.active {
-		a.Error(err)
-		a.End()
-		return err
-	}
-	return nil
 }
 
 func (a *activity) EndWithSummary(heading string, sections map[string][]string) {
