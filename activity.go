@@ -5,6 +5,7 @@ import "fmt"
 type ActCloser interface {
 	Log(string, ...interface{})
 	Error(error)
+	Done()
 	EndWithResult(string, ...interface{})
 	EndWithSummary(string, map[string][]string)
 }
@@ -20,6 +21,10 @@ func Begin(format string, d ...interface{}) *activity {
 		topic:  topic,
 		active: true,
 	}
+}
+
+func (a *activity) Done() {
+	a.EndWithResult("done")
 }
 
 func (a *activity) end() {
