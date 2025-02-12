@@ -4,7 +4,6 @@ import "fmt"
 
 type ActCloser interface {
 	Log(string, ...interface{})
-	End()
 	Error(error)
 	EndWithResult(string, ...interface{})
 	EndWithSummary(string, map[string][]string)
@@ -23,7 +22,7 @@ func Begin(format string, d ...interface{}) *activity {
 	}
 }
 
-func (a *activity) End() {
+func (a *activity) end() {
 	if a.active {
 		dispatch(MsgEnd, nil, a.topic)
 		a.active = false
@@ -34,7 +33,7 @@ func (a *activity) EndWithResult(format string, d ...interface{}) {
 	if a.active {
 		result := fmt.Sprintf(format, d...)
 		dispatch(MsgResult, result, a.topic)
-		a.End()
+		a.end()
 	}
 }
 
@@ -47,7 +46,7 @@ func (a *activity) Error(err error) {
 func (a *activity) EndWithSummary(heading string, sections map[string][]string) {
 	if a.active {
 		dispatch(MsgSummary, headingSections{heading: heading, sections: sections}, a.topic)
-		a.End()
+		a.end()
 	}
 }
 
