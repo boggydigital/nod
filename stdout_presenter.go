@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"maps"
 	"slices"
+	"sync"
 )
 
 func EnableStdOutPresenter() {
@@ -12,6 +13,7 @@ func EnableStdOutPresenter() {
 		topicPercents:   make(map[string]string),
 		prevMessage:     MsgNone,
 		existingAfterLF: true,
+		mtx:             new(sync.Mutex),
 	}
 	HandleFunc(sop, StdOut)
 }
@@ -23,6 +25,7 @@ type stdOutPresenter struct {
 	opportunisticBeforeLF bool
 	existingAfterLF       bool
 	opportunisticCR       bool
+	mtx                   *sync.Mutex
 }
 
 func (sop *stdOutPresenter) Close() error {
@@ -41,6 +44,9 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 		sop.opportunisticCR = true
 	}
 
+	sop.mtx.Lock()
+	defer sop.mtx.Unlock()
+
 	switch msgType {
 	case MsgBegin:
 		sop.printf("%s ", topic)
@@ -56,6 +62,7 @@ func (sop *stdOutPresenter) Handle(msgType MessageType, payload interface{}, top
 			sop.topicTotals[topic] = total
 		}
 	case MsgCurrent:
+
 		if total, ok := sop.topicTotals[topic]; ok && total > 0 {
 			if current, ok := payload.(uint64); ok {
 				sop.printCurrent(current, topic)
