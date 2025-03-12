@@ -2,9 +2,8 @@ package nod
 
 import "fmt"
 
-func Error(err error) error {
+func Error(err error) {
 	dispatch(MsgError, nil, err.Error())
-	return err
 }
 
 func ErrorStr(format string, d ...interface{}) string {
