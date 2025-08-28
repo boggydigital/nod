@@ -11,20 +11,27 @@ import (
 )
 
 const (
-	logExt     = ".log"
 	TimeFormat = "2006-01-02-15-04-05"
 )
 
-func EnableFileLogger(dir string) (io.Closer, error) {
+func EnableFileLogger(pfx, dir string) (io.Closer, error) {
 
 	if _, err := os.Stat(dir); os.IsNotExist(err) {
-		if err := os.MkdirAll(dir, 0755); err != nil {
+		if err = os.MkdirAll(dir, 0755); err != nil {
 			return nil, err
 		}
 	}
 
-	filename := filepath.Join(dir, time.Now().Format(TimeFormat)) + logExt
-	file, err := os.Create(filename)
+	var filename string
+	now := time.Now().Format(TimeFormat)
+	if pfx == "" {
+		filename = fmt.Sprintf("%s.log", now)
+	} else {
+		filename = fmt.Sprintf("%s-%s.log", pfx, now)
+	}
+
+	fp := filepath.Join(dir, filename)
+	file, err := os.Create(fp)
 	if err != nil {
 		return nil, err
 	}
